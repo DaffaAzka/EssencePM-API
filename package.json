@@ -1,0 +1,16 @@
+{
+  "name": "EssencePM-API",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx ./main.ts"
+  },
+  "devDependencies": {
+    "typescript": "5",
+    "tsx": "4"
+  },
+  "dependencies": {
+    "elysia": "1",
+    "@elysiajs/node": "1"
+  }
+}
