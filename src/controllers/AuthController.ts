@@ -1,3 +1,4 @@
+import { jwt } from "@elysiajs/jwt";
 import { Context } from "elysia";
 import { UserService } from "../services/UserService";
 import bcrypt from "bcryptjs";
@@ -71,12 +72,20 @@ export class AuthController {
       }
 
       const { password_hash, ...userWithoutPassword } = user;
+      const token = await (ctx as any).jwt.sign({
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+      });
 
       ctx.set.status = 200;
       return {
         success: true,
         message: "Login successful",
         data: userWithoutPassword,
+        token,
       };
     } catch (error) {
       ctx.set.status = 500;
@@ -131,6 +140,35 @@ export class AuthController {
       return {
         success: false,
         message: "Failed to retrieve user",
+        data: null,
+      };
+    }
+  }
+
+  async getProfile(ctx: Context) {
+    try {
+      const userId = (ctx as any).userId;
+      const user = await this.userService.getUserById(userId);
+
+      if (!user) {
+        ctx.set.status = 404;
+        return {
+          success: false,
+          message: "User not found",
+          data: null,
+        };
+      }
+
+      return {
+        success: true,
+        message: "Profile retrieved successfully",
+        data: user,
+      };
+    } catch (error) {
+      ctx.set.status = 500;
+      return {
+        success: false,
+        message: "Failed to retrieve profile",
         data: null,
       };
     }

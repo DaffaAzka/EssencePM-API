@@ -3,6 +3,10 @@ import { node } from "@elysiajs/node";
 import { authRoutes } from "./src/routes/auth";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
+import jwt from "@elysiajs/jwt";
+
+const JWT_SECRET =
+  process.env.JWT_SECRET || "";
 
 new Elysia({ adapter: node() })
   .use(
@@ -23,6 +27,12 @@ new Elysia({ adapter: node() })
           { name: "Users", description: "User management endpoints" },
         ],
       },
+    })
+  )
+  .use(
+    jwt({
+      name: "jwt",
+      secret: JWT_SECRET,
     })
   )
   .get("/", () => ({

@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { AuthController } from "../controllers/AuthController";
+import { authGuard } from "../middlewares/auth";
 
 const authController = new AuthController();
 
@@ -46,4 +47,20 @@ export const authRoutes = new Elysia()
       description: "Get specific user by ID",
       tags: ["Users"],
     },
-  });
+  })
+  .guard(
+    {
+      beforeHandle: authGuard,
+      headers: t.Object({
+        authorization: t.String(),
+      }),
+    },
+    (app) =>
+      app.get("/profile", (context) => authController.getProfile(context), {
+        detail: {
+          summary: "Get user profile",
+          description: "Get current user profile (requires authentication)",
+          tags: ["Auth"],
+        },
+      })
+  );
