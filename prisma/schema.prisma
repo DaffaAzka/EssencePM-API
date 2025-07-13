@@ -24,9 +24,26 @@ model User {
   avatar_url        String?   @db.Text
   password_hash     String    @db.VarChar(255)
   email_verified_at DateTime?
+  created_projects  Project[] @relation("ProjectCreator")
   remember_token    String?   @db.VarChar(100)
   created_at        DateTime  @default(now())
   updated_at        DateTime  @default(now()) @updatedAt
 
   @@map("users")
+}
+
+model Project {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String    @db.VarChar(255)
+  description       String    @db.Text()
+  status            String    @default("active") @db.VarChar(50) // active, completed, archived
+  priority          String    @default("medium") @db.VarChar(20) // low, medium, high
+  start_date        DateTime? @db.Date
+  end_date          DateTime? @db.Date
+  created_by        String    @db.Uuid
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @default(now()) @updatedAt
+  creator           User      @relation("ProjectCreator", fields: [created_by], references: [id])
+  
+  @@map("projects")
 }
