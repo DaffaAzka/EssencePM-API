@@ -4,9 +4,9 @@ import { authRoutes } from "./src/routes/auth";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import jwt from "@elysiajs/jwt";
+import { projectRoutes } from "./src/routes/project";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || "";
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 new Elysia({ adapter: node() })
   .use(
@@ -40,7 +40,7 @@ new Elysia({ adapter: node() })
     version: "1.0.0",
     docs: "/swagger",
   }))
-  .group("/api/v1", (app) => app.use(authRoutes))
+  .group("/api/v1", (app) => app.use(authRoutes).use(projectRoutes))
   .onError(({ code, error, set }) => {
     console.error("Error:", error);
 
