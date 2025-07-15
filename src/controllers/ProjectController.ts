@@ -138,4 +138,36 @@ export class ProjectController {
       };
     }
   }
+
+  async destroy(ctx: Context) {
+    try {
+      const { id } = ctx.params as { id: string };
+      const userId = (ctx as any).userId;
+      const project = await this.projectService.getProjectById(id);
+
+      if (project && project.created_by === userId) {
+        this.projectService.removeProject(id);
+        ctx.set.status = 201;
+        return {
+          success: true,
+          message: "Project deleted successfully",
+          data: project,
+        };
+      } else {
+        ctx.set.status = 404;
+        return {
+          success: false,
+          message: `Failed to retrieve project`,
+          data: null,
+        };
+      }
+    } catch (error) {
+      ctx.set.status = 404;
+      return {
+        success: false,
+        message: `Failed to retrieve project`,
+        data: null,
+      };
+    }
+  }
 }

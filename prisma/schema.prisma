@@ -24,7 +24,8 @@ model User {
   avatar_url        String?   @db.Text
   password_hash     String    @db.VarChar(255)
   email_verified_at DateTime?
-  created_projects  Project[] @relation("ProjectCreator")
+  projects  Project[] @relation("ProjectCreator")
+  project_members  ProjectMember[] @relation("ProjectMemberUser")
   remember_token    String?   @db.VarChar(100)
   created_at        DateTime  @default(now())
   updated_at        DateTime  @default(now()) @updatedAt
@@ -44,6 +45,19 @@ model Project {
   created_at        DateTime  @default(now())
   updated_at        DateTime  @default(now()) @updatedAt
   creator           User      @relation("ProjectCreator", fields: [created_by], references: [id])
+  project_members   ProjectMember[] @relation("ParentProject")
   
   @@map("projects")
+}
+
+model ProjectMember {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project_id        String    @db.Uuid
+  user_id           String    @db.Uuid
+  joined_at         DateTime  @default(now())
+  created_at        DateTime  @default(now()) @updatedAt
+
+  project           Project   @relation("ParentProject", fields: [project_id], references: [id])
+  user              User      @relation("ProjectMemberUser", fields: [user_id], references: [id])
+  @@map("project_members")
 }

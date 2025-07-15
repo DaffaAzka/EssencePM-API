@@ -25,6 +25,7 @@ export const projectRoutes = new Elysia({ prefix: "/project" }).guard(
           id: t.String(),
         }),
         detail: {
+          summary: "Get one project",
           description: "Get one project",
           tags: ["Project"],
         },
@@ -57,17 +58,19 @@ export const projectRoutes = new Elysia({ prefix: "/project" }).guard(
           end_date: t.Optional(t.Date()),
         }),
         detail: {
-          summary: "Store new project",
-          description: "Create a new project",
+          summary: "Update project",
+          description: "Update a project where the owner is the user",
           tags: ["Project"],
         },
       })
-      .delete("/:id", ({ params: { id } }) => {}, {
+      .delete("/:id", (context) => projectController.destroy(context), {
         params: t.Object({
-          id: t.Number(),
+          id: t.String(),
         }),
         detail: {
-          description: "Delete one project",
+          summary: "Destroy project",
+          description: "Delete a project where the owner is the user",
+          tags: ["Project"],
         },
       })
 );

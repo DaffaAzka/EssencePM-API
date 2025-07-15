@@ -109,11 +109,21 @@ export class ProjectService {
   async getAllProject(id: string) {
     return await prisma.project.findMany({
       where: {
-        created_by: id
+        created_by: id,
       },
       orderBy: {
         created_at: "desc",
       },
     });
+  }
+
+  async removeProject(id: string) {
+    try {
+      return await prisma.project.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new Error(`Failed to delete project`);
+    }
   }
 }

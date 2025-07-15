@@ -59,6 +59,6 @@ new Elysia({ adapter: node() })
       message: "Internal server error",
     };
   })
-  .listen(4000);
+  .listen(3000);
 
-console.log(`Listening on http://localhost:4000`);
+console.log(`Listening on http://localhost:3000`);
