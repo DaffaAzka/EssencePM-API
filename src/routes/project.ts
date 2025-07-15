@@ -13,17 +13,20 @@ export const projectRoutes = new Elysia({ prefix: "/project" }).guard(
   },
   (app) =>
     app
-      .get("/", () => {}, {
+      .get("/", (context) => projectController.index(context), {
         detail: {
-          description: "Get all projects",
+          summary: "Get all projects",
+          description: "Get list of a projects",
+          tags: ["Project"],
         },
       })
-      .get("/:id", ({ params: { id } }) => {}, {
+      .get("/:id", (context) => projectController.show(context), {
         params: t.Object({
-          id: t.Number(),
+          id: t.String(),
         }),
         detail: {
           description: "Get one project",
+          tags: ["Project"],
         },
       })
       .post("/", (context) => projectController.store(context), {
@@ -41,13 +44,22 @@ export const projectRoutes = new Elysia({ prefix: "/project" }).guard(
           tags: ["Project"],
         },
       })
-      .put("/:id", ({ body, params: { id } }) => {}, {
+      .put("/:id", (context) => projectController.update(context), {
         params: t.Object({
-          id: t.Number(),
+          id: t.String(),
         }),
-        body: t.Any(),
+        body: t.Object({
+          name: t.Optional(t.String()),
+          description: t.Optional(t.String()),
+          status: t.Optional(t.String()),
+          priority: t.Optional(t.String()),
+          start_date: t.Optional(t.Date()),
+          end_date: t.Optional(t.Date()),
+        }),
         detail: {
-          description: "Edit one project",
+          summary: "Store new project",
+          description: "Create a new project",
+          tags: ["Project"],
         },
       })
       .delete("/:id", ({ params: { id } }) => {}, {

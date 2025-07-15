@@ -53,15 +53,15 @@ export class ProjectService {
     }
   ) {
     try {
-      const project = prisma.project.findUnique({
-        where: { id },
-      });
+      // const project = prisma.project.findUnique({
+      //   where: { id },
+      // });
 
-      if (!project) {
-        throw new Error(`Project ${id} not found`);
-      }
+      // if (!project) {
+      //   throw new Error(`Project ${id} not found`);
+      // }
 
-      const updated = prisma.project.update({
+      return await prisma.project.update({
         where: { id },
         data: {
           ...(data.name && { name: data.name }),
@@ -84,6 +84,36 @@ export class ProjectService {
           },
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      throw new Error(`Failed to update project`);
+    }
+  }
+
+  async getProjectById(id: string) {
+    return await prisma.project.findUnique({
+      where: { id },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getAllProject(id: string) {
+    return await prisma.project.findMany({
+      where: {
+        created_by: id
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
   }
 }
