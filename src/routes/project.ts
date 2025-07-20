@@ -71,6 +71,6 @@ export const projectRoutes = new Elysia({ prefix: "/project" }).guard(
           summary: "Destroy project",
           description: "Delete a project where the owner is the user",
           tags: ["Project"],
-        },
+        },//i'm gay as balls
       })
 );
