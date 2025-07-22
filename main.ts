@@ -1,3 +1,4 @@
+import "dotenv/config"; // Add this line at the top
 import { Elysia } from "elysia";
 import { node } from "@elysiajs/node";
 import { authRoutes } from "./src/routes/auth";
@@ -8,6 +9,11 @@ import { projectRoutes } from "./src/routes/project";
 import { projectMemberRoutes } from "./src/routes/projectMember";
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
+
+if (!JWT_SECRET) {
+  console.error("JWT_SECRET is not defined in environment variables");
+  process.exit(1);
+}
 
 new Elysia({ adapter: node() })
   .use(
